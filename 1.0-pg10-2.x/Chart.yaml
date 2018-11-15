@@ -1,0 +1,20 @@
+name: timescaledb
+version: 0.0.1
+appVersion: 1.0.0-pg10
+description: TimescaleDB chart using @stable/postgresql v2.x (bitnami)
+keywords:
+- timescale
+- timescaledb
+- database
+- sql
+home: https://www.timescale.com/
+sources:
+- https://github.com/hsz-devops/helm--timescaledb
+- https://github.com/bitnami/bitnami-docker-postgresql/tree/master/10/debian-9
+maintainers:
+- name: JoaoCC
+  url: https://github.com/joaocc
+- name: HighSkillz
+  email: webdev@highskillz.com
+  url: github.com/hsz-devops/
+engine: gotpl
