@@ -1,7 +1,3 @@
-# TimescaleDB
-
-TODO: need to review this  file
-
 # PostgreSQL
 
 [PostgreSQL](https://www.postgresql.org/) is an object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
@@ -63,6 +59,10 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `volumePermissions.image.tag`                 | Init container volume-permissions image tag        | `latest`                                                  |
 | `volumePermissions.image.pullPolicy`          | Init container volume-permissions image pull policy| `Always`                                                  |
 | `volumePermissions.securityContext.runAsUser` | User ID for the init container                     | `0`                                                       |
+| `replication.enabled`                         | Would you like to enable replication               | `false`                                                   |
+| `replication.user`                            | Replication user                                   | `repl_user`                                               |
+| `replication.password`                        | Replication user password                          | `repl_password`                                           |
+| `replication.slaveReplicas`                   | Number of slaves replicas                          | `1`                                                       |
 | `postgresqlUsername`                          | PostgreSQL admin user                              | `postgres`                                                |
 | `postgresqlPassword`                          | PostgreSQL admin password                          | _random 10 character alphanumeric string_                 |
 | `postgresqlDatabase`                          | PostgreSQL database                                | `nil`                                                     |
@@ -150,6 +150,13 @@ The allowed extensions are `.sh`, `.sql` and `.sql.gz`.
 ## Production and horizontal scaling
 
 The following repo contains the recommended production settings for PostgreSQL server in an alternative [values file](values-production.yaml). Please read carefully the comments in the values-production.yaml file to set up your environment
+
+To horizontally scale this chart, first download the [values-production.yaml](values-production.yaml) file to your local folder, then:
+
+```console
+$ helm install --name my-release -f ./values-production.yaml stable/postgresql
+$ kubectl scale statefulset my-postgresql-slave --replicas=3
+```
 
 ## Persistence
 

@@ -9,14 +9,16 @@
 ##
 image:
   registry: docker.io
-  repository: timescale/timescaledb
-  tag: 1.0.0-pg10
-  # tag: latest-pg10
+  # repository: timescale/timescaledb
+  repository: ez123/timescaledb
+  tag: 1.0.0-pg10-bn
+  # tag: latest-pg10-bn
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
   pullPolicy: IfNotPresent
+  # pullPolicy: Always
 
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.

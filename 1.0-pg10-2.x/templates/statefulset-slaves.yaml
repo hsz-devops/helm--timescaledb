@@ -1,7 +1,8 @@
+{{- if .Values.replication.enabled }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: {{ template "postgresql.master.fullname" . }}
+  name: "{{ template "postgresql.fullname" . }}-slave"
   labels:
     app: {{ template "postgresql.name" . }}
     chart: {{ template "postgresql.chart" . }}
@@ -9,14 +10,14 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   serviceName: {{ template "postgresql.fullname" . }}-headless
-  replicas: 1
+  replicas: {{ .Values.replication.slaveReplicas }}
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
       app: {{ template "postgresql.name" . }}
       release: {{ .Release.Name | quote }}
-      role: master
+      role: slave
   template:
     metadata:
       name: {{ template "postgresql.fullname" . }}
@@ -25,7 +26,7 @@ spec:
         chart: {{ template "postgresql.chart" . }}
         release: {{ .Release.Name | quote }}
         heritage: {{ .Release.Service | quote }}
-        role: master
+        role: slave
     spec:
       {{- if .Values.securityContext.enabled }}
       securityContext:
@@ -85,9 +86,8 @@ spec:
         - name: NAMI_DEBUG
           value: "1"
         {{- end }}
-        {{- if .Values.replication.enabled }}
         - name: POSTGRESQL_REPLICATION_MODE
-          value: "master"
+          value: "slave"
         - name: POSTGRESQL_REPLICATION_USER
           value: {{ .Values.replication.user | quote }}
         - name: POSTGRESQL_REPLICATION_PASSWORD
@@ -95,21 +95,12 @@ spec:
             secretKeyRef:
               name: {{ template "postgresql.fullname" . }}
               key: postgresql-replication-password
-        {{- end }}
-        - name: POSTGRESQL_USERNAME
-          value: {{ .Values.postgresqlUsername | quote }}
-        - name: POSTGRESQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "postgresql.fullname" . }}
-              key: postgresql-password
-        - name: POSTGRESQL_DATABASE
-          value: {{ .Values.postgresqlDatabase | quote }}
+        - name: POSTGRESQL_MASTER_HOST
+          value: {{ template "postgresql.fullname" . }}
+        - name: POSTGRESQL_MASTER_PORT_NUMBER
+          value: {{ .Values.service.port | quote }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
-{{- if .Values.extraEnv }}
-{{ toYaml .Values.extraEnv | indent 8 }}
-{{- end }}
         ports:
         - name: postgresql
           containerPort: {{ .Values.service.port }}
@@ -140,8 +131,6 @@ spec:
           failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         {{- end }}
         volumeMounts:
-        - name: custom-init-scripts
-          mountPath: /docker-entrypoint-initdb.d
         {{- if .Values.persistence.enabled }}
         - name: data
           mountPath: /bitnami/postgresql
@@ -162,9 +151,6 @@ spec:
         configMap:
           name: {{ template "postgresql.fullname" . }}-configuration
       {{ end }}
-      - name: custom-init-scripts
-        configMap:
-          name: {{ template "postgresql.fullname" . }}-init-scripts
 {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
     - metadata:
@@ -191,6 +177,7 @@ spec:
       {{- end }}
       {{- end }}
 {{- else }}
-      - name: data
-        emptyDir: {}
+        - name: data
+          emptyDir: {}
+{{- end }}
 {{- end }}

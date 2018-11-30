@@ -68,8 +68,6 @@ postgresqlUsername: postgres
 ##
 # postgresqlDatabase:
 
-postgresqlDataroot: /var/lib/postgresql
-
 ## PostgreSQL configuration
 ## Specify runtime configuration parameters as a dict, using camelCase, e.g.
 ## {"sharedBuffers": "500MB"}

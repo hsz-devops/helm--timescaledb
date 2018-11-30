@@ -1,12 +1,14 @@
 name: timescaledb
 version: 0.0.1
 appVersion: 1.0.0-pg10
-description: TimescaleDB chart using @stable/postgresql v2.x (bitnami)
+description: TimescaleDB chart using @stable/postgresql v2.x (bitnami) and bitnami based image
 keywords:
 - timescale
 - timescaledb
 - database
 - sql
+- replication
+- cluster
 home: https://www.timescale.com/
 sources:
 - https://github.com/hsz-devops/helm--timescaledb
