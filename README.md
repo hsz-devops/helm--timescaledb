@@ -30,5 +30,5 @@ The 2.x series is an attempt to migrate to STS and to an image that is due to be
 
 # structures
     `./1.0-pg10-1x`     Deployment based chart, based on @stable/postgresql 1.x (non-bitnami)
-    `./1.0-pg10-bn`     AtatefulSet based chart, based on @stable/postgresql 1.x (bitnami)s
+    `./1.0-pg10-bn`     StatefulSet based chart, based on @stable/postgresql 1.x (bitnami)s
 
